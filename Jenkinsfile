@@ -4,11 +4,13 @@ pipeline {
     agent any
     
     environment {
-        // Update the main app image name to match the deployment file
+        // Core application image namespaces
         DOCKER_IMAGE_NAME = 'mhanzala/easyshop-app'
         DOCKER_MIGRATION_IMAGE_NAME = 'mhanzala/easyshop-migration'
         DOCKER_IMAGE_TAG = "${BUILD_NUMBER}"
-        GIT_BRANCH = "master"
+        
+        // FIX: Pointing to 'main' instead of 'master' to match your GitHub branch topology
+        GIT_BRANCH = "main"
         GIT_REPO = "https://github.com/Hanzala-Israr/full-stack-easyshop-kubernetes-devops.git"
     }
     
@@ -47,10 +49,11 @@ pipeline {
                 stage('Build Migration Image') {
                     steps {
                         script {
+                            // FIX: Pointing straight to root context where Dockerfile.migration is stored
                             docker_build(
                                 imageName: env.DOCKER_MIGRATION_IMAGE_NAME,
                                 imageTag: env.DOCKER_IMAGE_TAG,
-                                dockerfile: 'scripts/Dockerfile.migration',
+                                dockerfile: 'Dockerfile.migration',
                                 context: '.'
                             )
                         }
@@ -70,10 +73,7 @@ pipeline {
         stage('Security Scan with Trivy') {
             steps {
                 script {
-                    // Create directory for results
-                  
                     trivy_scan()
-                    
                 }
             }
         }
