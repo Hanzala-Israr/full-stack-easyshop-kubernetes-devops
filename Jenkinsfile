@@ -8,8 +8,6 @@ pipeline {
         DOCKER_IMAGE_NAME = 'mhanzala/easyshop-app'
         DOCKER_MIGRATION_IMAGE_NAME = 'mhanzala/easyshop-migration'
         DOCKER_IMAGE_TAG = "${BUILD_NUMBER}"
-        
-        // FIX: Pointing to 'main' instead of 'master' to match your GitHub branch topology
         GIT_BRANCH = "main"
         GIT_REPO = "https://github.com/Hanzala-Israr/full-stack-easyshop-kubernetes-devops.git"
     }
@@ -53,7 +51,7 @@ pipeline {
                             docker_build(
                                 imageName: env.DOCKER_MIGRATION_IMAGE_NAME,
                                 imageTag: env.DOCKER_IMAGE_TAG,
-                                dockerfile: 'Dockerfile.migration',
+                                dockerfile: 'scripts/Dockerfile.migration',
                                 context: '.'
                             )
                         }
