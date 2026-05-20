@@ -1,19 +1,11 @@
-# Use Node.js 18 Bullseye as base
+# Use Node.js 18 Bullseye as a pure runtime base
 FROM node:18-bullseye
 
 # Set working directory
 WORKDIR /app
 
-# Copy package files and tsconfig
-# FIX: Added package-lock.json explicitly to the tracking array so npm ci can evaluate it
-COPY package*.json tsconfig.json ./
-
-# Copy scripts and data
-COPY scripts ./scripts
-COPY .db ./.db
-
-# FIX: Swapped npm install for npm ci to prevent runtime container process blocks
-RUN npm ci
+# Copy the entire workspace (including the pre-installed node_modules from the host)
+COPY . .
 
 # Set environment variables
 ENV NODE_ENV=development
