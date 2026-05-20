@@ -1,29 +1,24 @@
-# --- Stage 1: Build & Dependency Installation ---
-FROM node:18-bullseye AS dependency-builder
+# --- Stage 1: Dependency Extraction ---
+# Pull from the main application image that successfully completed npm ci
+FROM mhanzala/easyshop-app:latest AS app-source
+
+# --- Stage 2: Clean Runtime ---
+FROM node:18-bullseye
 
 WORKDIR /app
 
-# Copy package management definitions
-COPY package*.json tsconfig.json ./
+# 1. Copy over the validated node_modules directory directly out of the application image
+COPY --from=app-source /app/node_modules ./node_modules
 
-# Install dependencies using the frozen lockfile
-RUN npm ci
-
-# --- Stage 2: Runtime Environment ---
-FROM node:18-bullseye AS runtime
-
-WORKDIR /app
-
-# Copy the pre-built node_modules directory straight from Stage 1
-COPY --from=dependency-builder /app/node_modules ./node_modules
-
-# Copy the remaining script logic and data folders
+# 2. Copy the migration operational code and database map assets
 COPY package*.json tsconfig.json ./
 COPY scripts ./scripts
 COPY .db ./.db
 
-# Set target environment variables
+# 3. Add any runtime required typings natively without pulling the installer daemon
+RUN npm list @types/mongoose || true
+
 ENV NODE_ENV=development
 
-# Command to execute migrations
+# Execute migration data runner
 CMD ["npx", "ts-node", "--project", "scripts/tsconfig.json", "scripts/migrate-data.ts"]
