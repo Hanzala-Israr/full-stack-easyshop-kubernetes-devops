@@ -1,5 +1,6 @@
-# Use Node.js 18 Alpine as base
-FROM node:18-alpine
+# Use Node.js 18 Bullseye as base
+# Base image changed from node:18-alpine to node:18-bullseye
+FROM node:18-bullseye
 
 # Set working directory
 WORKDIR /app
