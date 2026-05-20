@@ -1,5 +1,6 @@
 # Stage 1: Development/Build Stage
-FROM node:18-alpine AS builder
+# Base image changed from node:18-alpine to node:18-bullseye
+FROM node:18-bullseye AS builder
 
 # Set working directory
 WORKDIR /app
@@ -20,7 +21,8 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Production Stage
-FROM node:18-alpine AS runner
+# Base image changed from node:18-alpine to node:18-bullseye
+FROM node:18-bullseye AS runner
 
 # Set working directory
 WORKDIR /app
