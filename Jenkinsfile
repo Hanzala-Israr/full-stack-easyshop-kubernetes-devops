@@ -8,6 +8,8 @@ pipeline {
         DOCKER_IMAGE_NAME = 'mhanzala/easyshop-app'
         DOCKER_MIGRATION_IMAGE_NAME = 'mhanzala/easyshop-migration'
         DOCKER_IMAGE_TAG = "${BUILD_NUMBER}"
+        
+        // FIX: Pointing to 'main' instead of 'master' to match your GitHub branch topology
         GIT_BRANCH = "main"
         GIT_REPO = "https://github.com/Hanzala-Israr/full-stack-easyshop-kubernetes-devops.git"
     }
@@ -28,34 +30,26 @@ pipeline {
                 }
             }
         }
-        
         stage('Build Docker Images') {
-            parallel {
-                stage('Build Main App Image') {
-                    steps {
-                        script {
-                            docker_build(
-                                imageName: env.DOCKER_IMAGE_NAME,
-                                imageTag: env.DOCKER_IMAGE_TAG,
-                                dockerfile: 'Dockerfile',
-                                context: '.'
-                            )
-                        }
-                    }
-                }
-                
-                stage('Build Migration Image') {
-                    steps {
-                        script {
-                            // FIX: Pointing straight to root context where Dockerfile.migration is stored
-                            docker_build(
-                                imageName: env.DOCKER_MIGRATION_IMAGE_NAME,
-                                imageTag: env.DOCKER_IMAGE_TAG,
-                                dockerfile: 'scripts/Dockerfile.migration',
-                                context: '.'
-                            )
-                        }
-                    }
+            steps {
+                script {
+                    // 1. Build the main application image
+                    echo "Starting Main Application Build..."
+                    docker_build(
+                        imageName: env.DOCKER_IMAGE_NAME,
+                        imageTag: env.DOCKER_IMAGE_TAG,
+                        dockerfile: 'Dockerfile',
+                        context: '.'
+                    )
+                    
+                    // 2. Build the migration image (Multi-stage handles dependencies cleanly)
+                    echo "Starting Database Migration Build..."
+                    docker_build(
+                        imageName: env.DOCKER_MIGRATION_IMAGE_NAME,
+                        imageTag: env.DOCKER_IMAGE_TAG,
+                        dockerfile: 'scripts/Dockerfile.migration',
+                        context: '.'
+                    )
                 }
             }
         }
