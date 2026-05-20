@@ -1,27 +1,30 @@
 #!/bin/bash
 
-# Update system and install core packages
+# Update system and install core packages (Upgraded to OpenJDK 21)
 sudo apt update
-sudo apt install -y fontconfig openjdk-17-jre 
+sudo apt install -y fontconfig openjdk-21-jre
 
-# Jenkins installation
-sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
-  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
-echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \
-  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
-  /etc/apt/sources.list.d/jenkins.list > /dev/null
-sudo apt-get update
-sudo apt-get -y install jenkins
+# New Jenkins installation (Updated with 2026 GPG signing architecture)
+sudo mkdir -p /etc/apt/keyrings
+sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
 
-sudo systemctl start jenkins
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+sudo apt update
+sudo apt install -y jenkins
+
 sudo systemctl enable jenkins
+sudo systemctl start jenkins
 
 # Docker installation
 sudo apt-get update
 sudo apt-get install docker.io -y
 
 # User group permission
+# Note: $USER resolves to root during user_data boot, hardcoding 'ubuntu' as well protects access
 sudo usermod -aG docker $USER
+sudo usermod -aG docker ubuntu
 sudo usermod -aG docker jenkins
 
 sudo systemctl restart docker

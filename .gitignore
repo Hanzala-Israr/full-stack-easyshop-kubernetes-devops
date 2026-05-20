@@ -92,4 +92,4 @@ terraform.tfstate.backup
 terraform/terraform.tfstate
 terraform/terraform.tfstate.backup
 terra-key.pub
-terra-key
+terra-keyterra-key
