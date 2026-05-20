@@ -1,14 +1,29 @@
-# Use Node.js 18 Bullseye as a pure runtime base
-FROM node:18-bullseye
+# --- Stage 1: Build & Dependency Installation ---
+FROM node:18-bullseye AS dependency-builder
 
-# Set working directory
 WORKDIR /app
 
-# Copy the entire workspace (including the pre-installed node_modules from the host)
-COPY . .
+# Copy package management definitions
+COPY package*.json tsconfig.json ./
 
-# Set environment variables
+# Install dependencies using the frozen lockfile
+RUN npm ci
+
+# --- Stage 2: Runtime Environment ---
+FROM node:18-bullseye AS runtime
+
+WORKDIR /app
+
+# Copy the pre-built node_modules directory straight from Stage 1
+COPY --from=dependency-builder /app/node_modules ./node_modules
+
+# Copy the remaining script logic and data folders
+COPY package*.json tsconfig.json ./
+COPY scripts ./scripts
+COPY .db ./.db
+
+# Set target environment variables
 ENV NODE_ENV=development
 
-# Command to run migration
+# Command to execute migrations
 CMD ["npx", "ts-node", "--project", "scripts/tsconfig.json", "scripts/migrate-data.ts"]
