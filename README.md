@@ -1,10 +1,3 @@
-## Project Demo
-
-<p align="center">
-  <video src="demo/project-delivery.mp4" width="100%" controls autoplay loop muted></video>
-</p>
-
-
 # 🛍️ EasyShop - Modern E-commerce Platform
 
 EasyShop is a modern, full-stack e-commerce platform built with Next.js 14, TypeScript, and MongoDB. It features a beautiful UI with Tailwind CSS, secure authentication, real-time cart updates, and a seamless shopping experience.
@@ -496,3 +489,5 @@ kubectl get svc nginx-ingress-ingress-nginx-controller -n ingress-nginx -o jsonp
 # 👨‍💻 Author
 
 **Hanzala Israr** 
+
+<img width="1670" height="5352" alt="Screenshot_21-5-2026_162836_easyshop 13 48 161 202 sslip io" src="https://github.com/user-attachments/assets/1b9e5573-2ec6-4834-ae54-c2156b1e7b91" />
