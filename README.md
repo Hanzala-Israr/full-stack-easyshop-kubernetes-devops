@@ -1,3 +1,10 @@
+## Project Demo
+
+<p align="center">
+  <video src="demo/project-delivery.mp4" width="100%" controls autoplay loop muted></video>
+</p>
+
+
 # 🛍️ EasyShop - Modern E-commerce Platform
 
 [![Next.js](https://img.shields.io/badge/Next.js-14.1.0-black?style=flat-square&logo=next.js)](https://nextjs.org/)
@@ -492,7 +499,6 @@ kubectl get svc nginx-ingress-ingress-nginx-controller -n ingress-nginx -o jsonp
 >> kubectl describe challenges -n easyshop
 >> ```
 
-## **Congratulations!** <br/>
-![EasyShop Website Screenshot](./public/Deployed.png)
+# 👨‍💻 Author
 
-### Your project is now deployed.
+**Hanzala Israr** 
