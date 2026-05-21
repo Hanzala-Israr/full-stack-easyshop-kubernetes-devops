@@ -4,9 +4,8 @@ FROM node:18-bullseye
 # Set working directory
 WORKDIR /app
 
-# 1. Directly target and copy the ready host-built node_modules folder.
-# This explicitly bypasses any root .dockerignore block configuration rules!
-COPY node_modules ./node_modules
+# 1. Copy the unignored folder. Docker will see this perfectly!
+COPY migration_modules ./node_modules
 
 # 2. Copy the compiled script and mapping schema directories
 COPY scripts/migrate-data.js ./scripts/migrate-data.js
@@ -15,5 +14,5 @@ COPY .db ./.db
 # Set target environment parameters
 ENV NODE_ENV=development
 
-# RUN PURE JAVASCRIPT: Execution layer now has immediate access to native modules
+# RUN PURE JAVASCRIPT: Ready to run natively
 CMD ["node", "scripts/migrate-data.js"]
