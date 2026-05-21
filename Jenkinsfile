@@ -4,12 +4,9 @@ pipeline {
     agent any
     
     environment {
-        // Core application image namespaces
         DOCKER_IMAGE_NAME = 'mhanzala/easyshop-app'
         DOCKER_MIGRATION_IMAGE_NAME = 'mhanzala/easyshop-migration'
         DOCKER_IMAGE_TAG = "${BUILD_NUMBER}"
-        
-        // FIX: Pointing to 'main' instead of 'master' to match your GitHub branch topology
         GIT_BRANCH = "main"
         GIT_REPO = "https://github.com/Hanzala-Israr/full-stack-easyshop-kubernetes-devops.git"
     }
@@ -34,16 +31,25 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    // Automatically fetches and activates the 'node18' tool configuration we just defined
                     nodejs('node18') {
                         echo "Building application assets securely using Jenkins NodeJS tool layer..."
                         sh """
                             npm install --legacy-peer-deps
+                            
+                            # This compiles your production .next folder natively on the host!
                             npm run build
+                            
+                            echo "Pre-compiling migration script to pure JavaScript..."
+                            ./node_modules/.bin/tsc scripts/migrate-data.ts --target es2020 --module commonjs --allowSyntheticDefaultImports true
+                            
+                            echo "Creating unignored layers for containers..."
+                            cp -r node_modules migration_modules
+                            
+                            # --- CRUCIAL FIX: Bypass .dockerignore for build assets ---
+                            cp -r .next migration_next
                         """
                     }
 
-                    // Once compiled, standard docker build steps pick up the ready artifacts safely
                     echo "Starting Main Application Build..."
                     docker_build(
                         imageName: env.DOCKER_IMAGE_NAME,
@@ -59,6 +65,8 @@ pipeline {
                         dockerfile: 'scripts/Dockerfile.migration',
                         context: '.'
                     )
+
+                    sh "rm -rf migration_modules migration_next"
                 }
             }
         }
