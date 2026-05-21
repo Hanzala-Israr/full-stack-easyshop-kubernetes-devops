@@ -6,5 +6,5 @@ metadata:
 data:
   MONGODB_URI: "mongodb://mongodb-service:27017/easyshop"
   NODE_ENV: "production"
-  NEXT_PUBLIC_API_URL: "http://easyshop.13.60.89.200.sslip.io/api"
-  NEXTAUTH_URL: "http://easyshop.13.60.89.200.sslip.io"
+  NEXT_PUBLIC_API_URL: "http://easyshop.13.48.161.202.sslip.io/api"
+  NEXTAUTH_URL: "http://easyshop.13.48.161.202.sslip.io"
