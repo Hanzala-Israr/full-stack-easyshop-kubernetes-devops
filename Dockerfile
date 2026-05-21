@@ -1,26 +1,18 @@
-# Stage 1: Development/Build Stage
-FROM node:18-bullseye AS builder
+# --- Production Runtime Stage ---
+FROM node:18-bullseye-slim AS runner
 
+# Set working directory
 WORKDIR /app
 
-# --- REMOVED THE APK ADD LINE ---
-
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-
-# Stage 2: Production Stage
-FROM node:18-bullseye AS runner
-
-WORKDIR /app
-
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
-
+# Ensure we are explicitly running inside production constraints
 ENV NODE_ENV=production
 ENV PORT=3000
 
+# Copy over the entire workspace files (including pre-built modules and Next build artifacts)
+COPY . .
+
+# Expose app routing port
 EXPOSE 3000
-CMD ["node", "server.js"]
+
+# Start up the standard engine wrapper
+CMD ["npx", "next", "start"]
