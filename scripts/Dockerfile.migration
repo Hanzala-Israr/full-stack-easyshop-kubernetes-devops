@@ -4,15 +4,16 @@ FROM node:18-bullseye
 # Set working directory
 WORKDIR /app
 
-# 1. Copy the unignored folder. Docker will see this perfectly!
+# Copy the unignored folder from the host context
 COPY migration_modules ./node_modules
 
-# 2. Copy the compiled script and mapping schema directories
-COPY scripts/migrate-data.js ./scripts/migrate-data.js
+# Copy the original TypeScript scripts and data directories
+COPY scripts ./scripts
 COPY .db ./.db
 
 # Set target environment parameters
 ENV NODE_ENV=development
 
-# RUN PURE JAVASCRIPT: Ready to run natively
-CMD ["node", "scripts/migrate-data.js"]
+# FAIL-PROOF EXECUTION: Runs ts-node natively out of your internal node_modules 
+# to parse the original scripts/migrate-data.ts file directly!
+CMD ["./node_modules/.bin/ts-node", "--project", "scripts/tsconfig.json", "scripts/migrate-data.ts"]
