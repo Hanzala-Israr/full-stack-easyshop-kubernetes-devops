@@ -1,14 +1,22 @@
-# Use Node.js 18 Bullseye as a pure runtime base
+# Use Node.js 18 Bullseye as a stable, production-ready base
 FROM node:18-bullseye
 
 # Set working directory
 WORKDIR /app
 
-# Copy the entire workspace files (including the ready node_modules from the host)
-COPY . .
+# 1. Copy package definitions first to maximize Docker layer caching stability
+COPY package*.json tsconfig.json ./
 
-# Set environment variables
+# 2. Force install production dependencies and global script runners explicitly
+RUN npm install --legacy-peer-deps && \
+    npm install -g ts-node typescript @types/node
+
+# 3. Copy the remaining scripts and mapping configurations
+COPY scripts ./scripts
+COPY .db ./.db
+
+# Set target deployment parameters
 ENV NODE_ENV=development
 
-# Command to run migration
-CMD ["npx", "ts-node", "--project", "scripts/tsconfig.json", "scripts/migrate-data.ts"]
+# Execute migrations using the local compiled node environment paths
+CMD ["ts-node", "--project", "scripts/tsconfig.json", "scripts/migrate-data.ts"]
