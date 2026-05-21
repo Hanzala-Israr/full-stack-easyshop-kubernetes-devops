@@ -1,24 +1,14 @@
-# --- Stage 1: Dependency Extraction ---
-# Pull from the main application image that successfully completed npm ci
-FROM mhanzala/easyshop-app:latest AS app-source
-
-# --- Stage 2: Clean Runtime ---
+# Use Node.js 18 Bullseye as a pure runtime base
 FROM node:18-bullseye
 
+# Set working directory
 WORKDIR /app
 
-# 1. Copy over the validated node_modules directory directly out of the application image
-COPY --from=app-source /app/node_modules ./node_modules
+# Copy the entire workspace files (including the ready node_modules from the host)
+COPY . .
 
-# 2. Copy the migration operational code and database map assets
-COPY package*.json tsconfig.json ./
-COPY scripts ./scripts
-COPY .db ./.db
-
-# 3. Add any runtime required typings natively without pulling the installer daemon
-RUN npm list @types/mongoose || true
-
+# Set environment variables
 ENV NODE_ENV=development
 
-# Execute migration data runner
+# Command to run migration
 CMD ["npx", "ts-node", "--project", "scripts/tsconfig.json", "scripts/migrate-data.ts"]
