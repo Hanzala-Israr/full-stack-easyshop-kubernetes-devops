@@ -10,6 +10,5 @@ COPY . .
 # Set target environment parameters
 ENV NODE_ENV=development
 
-# FAIL-PROOF EXECUTION: Uses the core node binary and registers ts-node explicitly 
-# from your copied local node_modules folder instead of using the broken symlink
-CMD ["node", "-r", "./node_modules/ts-node/register", "scripts/migrate-data.ts"]
+# RUN PURE JAVASCRIPT: No symlinks, no preloads, no compiler conflicts
+CMD ["node", "scripts/migrate-data.js"]
