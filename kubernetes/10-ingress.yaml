@@ -8,7 +8,7 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
-    - host: easyshop.16.170.237.132.sslip.io
+    - host: easyshop.51.20.253.89.sslip.io
       http:
         paths:
           - path: /
