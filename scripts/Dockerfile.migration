@@ -4,14 +4,12 @@ FROM node:18-bullseye
 # Set working directory
 WORKDIR /app
 
-# 1. Copy everything from the host workspace straight into the image
-# This automatically brings over the node_modules that Jenkins just successfully built!
+# Copy everything from the host workspace straight into the image
 COPY . .
 
-# 2. Globally install ts-node inside the container image using a safe, fallback path 
-# instead of a live network install
-ENV PATH /app/node_modules/.bin:$PATH
+# Set target environment parameters
 ENV NODE_ENV=development
 
-# 3. Explicitly execute using the local binary directly from your node_modules
-CMD ["./node_modules/.bin/ts-node", "--project", "scripts/tsconfig.json", "scripts/migrate-data.ts"]
+# FAIL-PROOF EXECUTION: Uses the core node binary and registers ts-node explicitly 
+# from your copied local node_modules folder instead of using the broken symlink
+CMD ["node", "-r", "./node_modules/ts-node/register", "scripts/migrate-data.ts"]
