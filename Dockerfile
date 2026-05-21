@@ -1,18 +1,19 @@
-# --- Production Runtime Stage ---
-FROM node:18-bullseye-slim AS runner
-
-# Set working directory
+# Use Node.js 18 Bullseye as a stable runtime base
+FROM node:18-bullseye-slim
 WORKDIR /app
 
-# Ensure we are explicitly running inside production constraints
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Copy over the entire workspace files (including pre-built modules and Next build artifacts)
-COPY . .
+# 1. Directly copy the pre-built node_modules from the host
+COPY migration_modules ./node_modules
 
-# Expose app routing port
+# 2. Directly copy the compiled production build folder from the host
+COPY .next ./.next
+COPY public ./public
+COPY package*.json ./
+
 EXPOSE 3000
 
-# Start up the standard engine wrapper
-CMD ["npx", "next", "start"]
+# Run the production server directly using the local binary
+CMD ["node_modules/.bin/next", "start"]
