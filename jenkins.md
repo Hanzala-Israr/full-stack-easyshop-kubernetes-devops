@@ -166,4 +166,3 @@ Important log locations:
 - [Jenkins Documentation](https://www.jenkins.io/doc/)
 - [Docker Documentation](https://docs.docker.com/)
 - [GitHub Webhooks Guide](https://docs.github.com/en/webhooks)
-- [EasyShop Shared Library](https://github.com/iemafzalhassan/EasyShop-jenkins-shared-lib)
