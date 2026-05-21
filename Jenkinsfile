@@ -30,10 +30,20 @@ pipeline {
                 }
             }
         }
+        
         stage('Build Docker Images') {
             steps {
                 script {
-                    // 1. Build the main application image
+                    // Automatically fetches and activates the 'node18' tool configuration we just defined
+                    nodejs('node18') {
+                        echo "Building application assets securely using Jenkins NodeJS tool layer..."
+                        sh """
+                            npm install --legacy-peer-deps
+                            npm run build
+                        """
+                    }
+
+                    // Once compiled, standard docker build steps pick up the ready artifacts safely
                     echo "Starting Main Application Build..."
                     docker_build(
                         imageName: env.DOCKER_IMAGE_NAME,
@@ -42,7 +52,6 @@ pipeline {
                         context: '.'
                     )
                     
-                    // 2. Build the migration image (Multi-stage handles dependencies cleanly)
                     echo "Starting Database Migration Build..."
                     docker_build(
                         imageName: env.DOCKER_MIGRATION_IMAGE_NAME,
@@ -53,6 +62,7 @@ pipeline {
                 }
             }
         }
+        
         
         stage('Run Unit Tests') {
             steps {
