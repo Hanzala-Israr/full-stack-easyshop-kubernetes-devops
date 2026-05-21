@@ -13,6 +13,19 @@ spec:
       labels:
         app: easyshop
     spec:
+      # --- INIT CONTAINER STAGE ---
+      # Forces database migration to finish BEFORE the main app boots
+      initContainers:
+        - name: db-migration
+          image: mhanzala/easyshop-migration:latest
+          imagePullPolicy: Always
+          env:
+            - name: MONGODB_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: easyshop-config
+                  key: MONGODB_URI
+      # ----------------------------
       containers:
         - name: easyshop
           image: mhanzala/easyshop-app:26
