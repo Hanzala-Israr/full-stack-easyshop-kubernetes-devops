@@ -5,11 +5,11 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# 1. Directly copy the pre-built node_modules from the host
+# 1. Directly copy the unignored dependency layer
 COPY migration_modules ./node_modules
 
-# 2. Directly copy the compiled production build folder from the host
-COPY .next ./.next
+# 2. Directly copy the unignored production build folder into the expected path
+COPY migration_next ./.next
 COPY public ./public
 COPY package*.json ./
 
