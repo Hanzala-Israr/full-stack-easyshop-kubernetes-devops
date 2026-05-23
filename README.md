@@ -1,6 +1,16 @@
 # 🛍️ EasyShop - Modern E-commerce Platform
 
-EasyShop is a modern, full-stack e-commerce platform built with Next.js 14, TypeScript, and MongoDB. It features a beautiful UI with Tailwind CSS, secure authentication, real-time cart updates, and a seamless shopping experience.
+
+
+<p align="center">
+  <video src="https://github.com/user-attachments/assets/47799403-4e23-4ecf-ba09-253f3a29c2db" width="100%" style="max-width: 850px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);" controls autoplay loop muted></video>
+</p>
+
+
+
+
+
+EasyShop is a production-ready, full-stack e-commerce platform deployed on a highly available Amazon EKS (Kubernetes) cluster. The infrastructure utilizes an automated Jenkins CI pipeline to natively compile Next.js assets on host layers and build secure, multi-stage Docker containers. Continuous Delivery is orchestrated via ArgoCD following strict GitOps principles, while an automated database migration lifecycle ensures seamless seeding to a stateful MongoDB layer. Finally, the entire environment is monitored continuously via Prometheus and Grafana dashboards exposed through native AWS Load Balancers.
 
 ## ✨ Features
 
